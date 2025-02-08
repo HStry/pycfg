@@ -1,3 +1,6 @@
+# pycfg - bridge config and commandline.
+# Copyright (c) 2025 - Hans Strijker
+# Licensed under LGPL-3.0
 ---
 .conf:
   configurable:
