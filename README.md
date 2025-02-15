@@ -1,1 +1,1 @@
-# pycfg
+# pyconf
