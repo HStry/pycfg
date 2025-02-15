@@ -1,0 +1,126 @@
+# pycfg - bridge config and commandline.
+# Copyright (c) 2025 - Hans Strijker
+# Licensed under LGPL-3.0
+---
+.conf:
+  configurable:
+    drop-in:
+      enabled: true
+      has_precedence: true
+    system_config:
+      # If true, settings can be (re)configured in /etc, Windows Registry, or %ProgramData%
+      enabled: true
+      posix:
+        path:
+          minimal_directory_mask: 0o002
+          minimal_file_mask: 0x113
+          precedence:
+            - /etc
+            - /usr/local/etc
+      windows:
+        path:
+          precedence:
+            - %ALLUSERSPROFILE%
+        registry:
+          # If true, windows registry will be searched.
+          enabled: false
+          # If true, windows registry has precedence over %ALLUSERSPROFILE%, %(LOCAL)APPDATA%, or %USERPROFILE%
+          has_precedence: false
+        onedrive:
+          # If true and path exists, onedrive path will be considered like %USERPROFILE%
+          enabled: false
+          has_precedence: true
+        wsl:
+          windows_paths_fallback: true
+          windows_paths_have_precedence: false
+    user_config:
+      # If true, settings can be (re)configured under ${HOME} or %USERPROFILE%.
+      enabled: true
+      posix:
+        path:
+          minimal_directory_mask: 0o027
+          minimal_file_mask: 0x113
+          precedence:
+            - ${XDG_CONFIG_HOME}
+            - ${HOME}/.config
+            - ${HOME}
+      windows:
+        path:
+          precedence:
+            - %APPDATA%
+            - %LOCALAPPDATA%
+            - %OneDrive%
+            - %USERPROFILE%
+        registry:
+          enabled: false
+          has_precedence: false
+        onedrive:
+          enabled: false
+          has_precedence: true
+        wsl:
+          windows_paths_fallback: true
+          windows_paths_have_precedence: false
+    command_line:
+      # If true, settings can be (re)configured on the fly at the command line.
+      enabled: true
+      has_precedence: true
+      allow_shortening: true
+      allow_help_override: false
+      
+  
+  
+    
+parameter: value
+parameter.conf:
+  hint: "Short (max 54chr) hint line"
+  help: |
+    Longer help text that can be displayed in its own help section.
+  
+  # Use type for a single valid object type, and types for a choice of multiple.
+  type: str
+  # types:
+  #   - int
+  #   - float
+
+  # Providing the 'choices' key, 
+  # choices:
+  #   - foo
+  #   - bar
+  
+  # Number of arguments of type `type(s)' this parameter can hold. Defaults to `1'. Setting this to anything else will convert the parameter to a list object.
+  # Possible values are any integer, for a precise number of arguments, or
+  #   ?       Zero or one argument.
+  #   *       Zero or more arguments.
+  #   a?      Zero or `a' orguments.
+  #   a+      `A' or more arguments.
+  #   a-b     Any number of arguments between (and including) `a' and `b'.
+  #   a,c     Either `a' or `b' arguments.
+  #   a-b,c   Combinations of above.
+  count: 1
+
+  # [OPTIONAL] set whether this parameter can be (re)configured in system, or
+  # user config files. Defaults to the globally set .conf/system|user_config.
+  # Can be shorthanded to:
+  #   system_config: true|false
+  #   user_config: true|false
+  system_config:
+    enabled: true
+  user_config:
+    enabled: true
+  
+  # [OPTIONAL] set whether this parameter can be (re)configured at the command
+  # line. Defaults to the globally set .conf/command_line. Can
+  # be shorthanded to:
+  command_line:
+    # If below long_form or short_form keys are present, 'enabled: true' is
+    # implied. Setting it to 'false' still disables the command line option.
+    enabled: true
+    
+    # [OPTIONAL] defaults to one argument name, '--parameter' in this example.
+    # By default, if the first letter of the parameter is still free, it will
+    # be used as a short-form parameter. If this is unwanted, short_form should
+    # be set to `null' or an empty list.
+    long_form:
+      - parameter
+    short_form:
+      - p
