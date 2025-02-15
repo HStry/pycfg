@@ -1,31 +1,39 @@
 ---
 .conf:
-  system_config: true
-  user_config: true
-  command_line: true
+  system-config: true
+  user-config: true
+  command-line: true
+  .anchors:
+    system-param: &system-param
+      drop-in:
+        enabled: true
+        has-precedence: false
+      system-config: true
+      user-config: false
+      command-line: false
 
-config_paths:
+config-paths:
   system:
-    posix.conf: 0x0600
+    posix.conf: *system-parameter
     posix:
       - /etc
       - /usr/local/etc
-    windows.conf: 0x0600
+    windows.conf: *system-parameter
     windows:
       - %ALLUSERSPROFILE%
-    darwin.conf: 0x0600
+    darwin.conf: *system-parameter
     darwin: []
   user:
-    posix.conf: 0x0600
+    posix.conf: *system-parameter
     posix:
       - ${XDG_CONFIG_HOME}
       - ${HOME}/.config
       - ${HOME}
-    windows.conf: 0x0600
+    windows.conf: *system-parameter
     windows:
       - %APPDATA%
       - %LOCALAPPDATA%
       - %OneDrive%
       - %USERPROFILE%
-    darwin.conf: 0x0600
+    darwin.conf: *system-parameter
     darwin: []
