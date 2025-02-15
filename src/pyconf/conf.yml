@@ -1,0 +1,31 @@
+---
+.conf:
+  system_config: true
+  user_config: true
+  command_line: true
+
+config_paths:
+  system:
+    posix.conf: 0x0600
+    posix:
+      - /etc
+      - /usr/local/etc
+    windows.conf: 0x0600
+    windows:
+      - %ALLUSERSPROFILE%
+    darwin.conf: 0x0600
+    darwin: []
+  user:
+    posix.conf: 0x0600
+    posix:
+      - ${XDG_CONFIG_HOME}
+      - ${HOME}/.config
+      - ${HOME}
+    windows.conf: 0x0600
+    windows:
+      - %APPDATA%
+      - %LOCALAPPDATA%
+      - %OneDrive%
+      - %USERPROFILE%
+    darwin.conf: 0x0600
+    darwin: []
