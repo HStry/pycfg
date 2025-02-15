@@ -2,74 +2,76 @@
 # Copyright (c) 2025 - Hans Strijker
 # Licensed under LGPL-3.0
 ---
+# the global `.conf' entry contains the default settings.
 .conf:
-  configurable:
-    drop-in:
-      enabled: true
-      has_precedence: true
-    system_config:
-      # If true, settings can be (re)configured in /etc, Windows Registry, or %ProgramData%
-      enabled: true
-      posix:
-        path:
-          minimal_directory_mask: 0o002
-          minimal_file_mask: 0x113
-          precedence:
-            - /etc
-            - /usr/local/etc
-      windows:
-        path:
-          precedence:
-            - %ALLUSERSPROFILE%
-        registry:
-          # If true, windows registry will be searched.
-          enabled: false
-          # If true, windows registry has precedence over %ALLUSERSPROFILE%, %(LOCAL)APPDATA%, or %USERPROFILE%
-          has_precedence: false
-        onedrive:
-          # If true and path exists, onedrive path will be considered like %USERPROFILE%
-          enabled: false
-          has_precedence: true
-        wsl:
-          windows_paths_fallback: true
-          windows_paths_have_precedence: false
-    user_config:
-      # If true, settings can be (re)configured under ${HOME} or %USERPROFILE%.
-      enabled: true
-      posix:
-        path:
-          minimal_directory_mask: 0o027
-          minimal_file_mask: 0x113
-          precedence:
-            - ${XDG_CONFIG_HOME}
-            - ${HOME}/.config
-            - ${HOME}
-      windows:
-        path:
-          precedence:
-            - %APPDATA%
-            - %LOCALAPPDATA%
-            - %OneDrive%
-            - %USERPROFILE%
-        registry:
-          enabled: false
-          has_precedence: false
-        onedrive:
-          enabled: false
-          has_precedence: true
-        wsl:
-          windows_paths_fallback: true
-          windows_paths_have_precedence: false
-    command_line:
-      # If true, settings can be (re)configured on the fly at the command line.
-      enabled: true
-      has_precedence: true
-      allow_shortening: true
-      allow_help_override: false
-      
+  drop-in:
+    enabled: true
+    has-precedence: true
   
+  system-config:
+    mutable: true
+    posix:
+      paths: &system-config-posix-paths
+        - /etc
+        - /usr/local/etc
+    windows:
+      paths:
+        - %ALLUSERSPROFILE%
+      wsl:
+        paths: *system-config-posix-paths
+        windows-paths-fallback:
+          enabled: true
+          has-precedence: false
+          same-scope: true
+    darwin:
+      paths: []
   
-    
+  user-config:
+    mutable: true
+    posix:
+      paths: &user-config-posix-paths
+        - ${XDG_CONFIG_HOME}
+        - ${HOME}/.config
+        - ${HOME}
+    windows:
+      paths:
+        - %APPDATA%
+        - %LOCALAPPDATA%
+        - %OneDrive%
+        - %USERPROFILE%
+      wsl:
+        paths: *user-config-posix-paths
+        windows-paths-fallback:
+          enabled: true
+          has-precedence: false
+          same-scope: true
+    darwin:
+      paths: []
+  
+  command-line:
+    mutable: true
+    has-precedence: true
+    allow-shortening: true
+    allow-help-override: false
+    auto-shortform: true
+
+  anchors:
+    flag: &flag
+      type: bool
+      value: false
+      system-config: false
+      user-config: false
+      command-line:
+        type: flag
+        value: true
+        action: set
+        repeatable: null
+        
+        
+        
+        
+
+
 parameter: value
 parameter.conf:
   hint: "Short (max 54chr) hint line"
